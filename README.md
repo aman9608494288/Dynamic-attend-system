@@ -11,7 +11,7 @@ Automated Dashboards: Students receive a personalized dashboard showing live att
 Cross-Platform Sync: Backend integration with SQLite ensures all data is synchronized across devices instantly.
 
 🛠️ Tech Stack
-Frontend: HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+).
+Frontend: HTML5, CSS3 (Glassmorphism UI), and JavaScript (ES6+).
 
 Backend: Python Flask with Flask-CORS for secure API communication.
 
@@ -28,6 +28,7 @@ Plaintext
 ├── dashboard.html      # Dynamic Student Panel & QR Generator/Scanner
 ├── attendance.db       # SQLite database storing student records
 └── requirements.txt    # Python library dependencies list
+
 ⚙️ Installation & Setup
 1. Backend Setup
 Clone the Repository: Download the project files to your local directory.
@@ -43,7 +44,7 @@ python app.py
 2. Frontend Setup
 Launch: Open home.html in any modern web browser.
 
-Configuration: Update the BASE_URL in your JavaScript files to match your server address (local or live).
+Configuration: Update the BASE_URL in your JavaScript files to match your server address (local http://127.0.0.1:5000 or live Render URL).
 
 📡 Live Deployment
 Frontend: Hosted on Netlify for high-speed static delivery.
