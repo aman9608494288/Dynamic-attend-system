@@ -1,75 +1,73 @@
-# 🛡️ Dynamic Attend | Smart Attendance System
+🛡️ Dynamic Attend | Smart Attendance System
+Dynamic Attend is a secure, real-time attendance management system designed to eliminate proxies using time-stamped, regenerating QR codes. This project was specifically developed for the BCA Program at Aryabhatta Knowledge University (AKU).
 
-**Dynamic Attend** is a secure, real-time attendance management system designed to eliminate proxies using time-stamped, regenerating QR codes. Developed for the **BCA Program at Aryabhatta Knowledge University (AKU)**.
+🚀 Key Features
+Dynamic QR Generation: Secure AES-encrypted QR codes refresh every 30 seconds to prevent cheating and proxies.
 
----
+Instant Verification: Real-time scanning and logging using the html5-qrcode library for millisecond-fast processing.
 
-## 🚀 Key Features
-* **Dynamic QR Generation:** Secure AES-encrypted QR codes refresh every 30 seconds to prevent cheating.
-* **Instant Verification:** Real-time scanning and logging using the `html5-qrcode` library.
-* **Automated Dashboards:** Each student receives a personalized dashboard showing real-time attendance stats (e.g., 15/30 classes).
-* **Cross-Platform Sync:** Backend integration with **SQLite** ensures data is pushed directly to the database in milliseconds.
+Automated Dashboards: Students receive a personalized dashboard showing live attendance stats (e.g., 15/30 classes).
 
----
+Cross-Platform Sync: Backend integration with SQLite ensures all data is synchronized across devices instantly.
 
-## 🛠️ Tech Stack
-* **Frontend:** HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+).
-* **Backend:** Python Flask with Flask-CORS for secure API handling.
-* **Database:** SQLite for local prototyping and student data persistence.
-* **Libraries:** `QRCode.js` for generation and `Html5-Qrcode` for scanning.
+🛠️ Tech Stack
+Frontend: HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+).
 
----             
+Backend: Python Flask with Flask-CORS for secure API communication.
 
-## 📂 Project Structure
-```text
-├── app.py              # Flask Backend API
-├── home.html           # Landing Page & Intro Screen
-├── login(1).html       # Multi-role Login with OTP
-├── signup.html         # Student/Teacher Registration
-├── dashboard.html      # Student Panel & QR Generator
-├── attendance.db       # SQLite Database File
-└── requirements.txt    # Python Dependencies
+Database: SQLite for efficient student data persistence and rapid prototyping.
 
----
-## ⚙️ Installation & Setup
+Libraries: QRCode.js for generation and Html5-Qrcode for camera-based scanning.
+
+📂 Project Structure
+Plaintext
+├── app.py              # Flask Backend API (Python)
+├── home.html           # Landing Page with futuristic intro screen
+├── login(1).html       # Unified Login portal with OTP authentication
+├── signup.html         # User Registration (Student, Teacher, Parent)
+├── dashboard.html      # Dynamic Student Panel & QR Generator/Scanner
+├── attendance.db       # SQLite database storing student records
+└── requirements.txt    # Python library dependencies list
+⚙️ Installation & Setup
 1. Backend Setup
-Clone the repository.
+Clone the Repository: Download the project files to your local directory.
 
-Install dependencies:
+Install Dependencies: Run the following command in your terminal:
 
 Bash
 pip install flask flask-cors gunicorn
-Run the server:
+Run the Server: Start the API by executing:
 
 Bash
 python app.py
-
 2. Frontend Setup
-Open home.html in any modern web browser.
+Launch: Open home.html in any modern web browser.
 
-Ensure the BASE_URL in your JavaScript files matches your local or live Flask server address.
+Configuration: Update the BASE_URL in your JavaScript files to match your server address (local or live).
 
 📡 Live Deployment
-Frontend: Hosted on Netlify.
+Frontend: Hosted on Netlify for high-speed static delivery.
 
-Backend: Hosted on Render with a persistent SQLite disk.
+Backend: Hosted on Render utilizing a persistent SQLite disk for data integrity.
+
+👥 Role-Based Instructions
+👨‍🏫 For Teachers
+Login: Access the "Verificator" panel using your authorized credentials.
+
+Scanner Activation: Click the "Activate Scanner" button to initiate the camera feed.
+
+Verification: Scan a student's live QR code; the system updates the database automatically and provides a success alert.
+
+👪 For Parents
+Login: Use the "Parent Login" option on the home page.
+
+Dashboard: Enter the student's Roll Number to fetch live attendance data.
+
+Monitoring: Track attendance progress via the "Classes Attended vs. Total Classes" visual progress bar.
 
 👨‍💻 Developed By
-IT MINDS COLLECTIVE BCA Student, CIMAGE (AKU)
+Team: IT MINDS COLLECTIVE
 
+Lead: BCA Student, CIMAGE
 
----
-## 👥 Role-Based Instructions
-
-### 👨‍🏫 For Teachers
-1. **Login:** Use the Teacher credentials to access the "Verificator" panel.
-2. **Scanner Activation:** Click **"Activate Scanner"** to open the camera.
-3. **Verification:** Scan the student's regenerating QR code.
-
-
-   * *Note:* The system will automatically update the database and provide a success alert.
-
-### 👪 For Parents
-1. **Login:** Access the **"Parent Login"** via the home page.
-2. **Dashboard:** Enter the student's **Roll Number** to view their live attendance percentage.
-3. **Monitoring:** View the "Classes Attended vs. Total Classes" progress bar.
+Affiliation: Aryabhatta Knowledge University (AKU)
