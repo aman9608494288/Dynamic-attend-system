@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | DynamicAttend</title>
+<style>
+  @keyframes float {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(30px, 30px); }
+}
+
+  :root {
+    --primary: #818cf8;
+    --accent: #38bdf8;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass-bg: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.04)
+    );
+    --border-color: rgba(255, 255, 255, 0.2);
+    --backdrop: blur(18px);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #1e1b4b, #0f172a, #020617);
+    color: var(--text-main);
+    overflow: hidden;
+  }
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: var(--primary);
+  filter: blur(120px);
+  opacity: 0.25;
+  animation: float 10s infinite alternate;
+  z-index: -1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -10%;
+  right: -10%;
+  width: 40vw;
+  height: 40vw;
+  background: var(--accent);
+  filter: blur(120px);
+  opacity: 0.25;
+  animation: float 12s infinite alternate-reverse;
+  z-index: -1;
+}
+
+  
+   
+
+  .login-box {
+    width: 380px;
+    padding: 2.8rem 2.4rem;
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop);
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .login-box h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+  }
+
+  .login-box p {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 2.2rem;
+    font-size: 0.95rem;
+  }
+
+  .input-group {
+    margin-bottom: 1.3rem;
+  }
+
+  .input-group label {
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--text-muted);
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    outline: none;
+    font-size: 0.95rem;
+  }
+
+  .input-group input::placeholder {
+    color: #9ca3af;
+  }
+.input-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+}
+
+  .login-btn {
+    width: 100%;
+    padding: 0.95rem;
+    margin-top: 0.8rem;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
+  }
+
+  .extra {
+    text-align: center;
+    margin-top: 1.6rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .extra a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .error {
+    margin-top: 0.9rem;
+    font-size: 0.85rem;
+    text-align: center;
+    display: none;
+  }
+</style>
+
+  
+</head>
+
+<body>
+
+  <div class="login-box">
+    <h1>Login</h1>
+    <p>Access your DynamicAttend account</p>
+
+    <!-- LOGIN ID -->
+    <div class="input-group">
+      <label>Email or Mobile Number</label>
+      <input type="text" id="loginId" placeholder="Enter email or mobile" />
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-group">
+  <label>Password</label>
+  <div style="position: relative;">
+    <input type="password" id="password" placeholder="Enter password" />
+    <span 
+      onclick="togglePassword()" 
+      style="
+        position:absolute;
+        right:12px;
+        top:50%;
+        transform:translateY(-50%);
+        cursor:pointer;
+        font-size:0.85rem;
+        color:#38bdf8;
+      ">
+      Show
+    </span>
+  </div>
+</div>
+
+
+    <!-- SEND OTP BUTTON -->
+    <button class="login-btn" id="sendOtpBtn" onclick="sendOTP()">
+      Send OTP
+    </button>
+
+    <!-- OTP INPUT (HIDDEN INITIALLY) -->
+    <div class="input-group" id="otpBox" style="display: none;">
+      <label>Enter OTP</label>
+      <input type="text" id="otpInput" placeholder="Enter OTP" />
+    </div>
+
+    <!-- VERIFY BUTTON (HIDDEN INITIALLY) -->
+    <button class="login-btn" id="verifyBtn" style="display:none;" onclick="verifyOTP()">
+      Verify & Login
+    </button>
+
+    <div class="error" id="errorMsg"></div>
+
+    <div class="extra">
+      Don’t have an account?
+      <a href="signup.html">Create one</a>
+    </div>
+  </div>
+
+  <script>
+
+    function togglePassword() {
+  const pass = document.getElementById("password");
+  const toggleText = event.target;
+
+  if (pass.type === "password") {
+    pass.type = "text";
+    toggleText.innerText = "Hide";
+  } else {
+    pass.type = "password";
+    toggleText.innerText = "Show";
+  }
+}
+  const DEMO_OTP = "1234";
+
+  function sendOTP() {
+    const loginId = document.getElementById("loginId").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.style.display = "block";
+
+    if (!loginId || !password) {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Please enter email/mobile and password.";
+      return;
+    }
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser) {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "No account found. Please sign up first.";
+      return;
+    }
+
+    if (
+      (loginId === storedUser.email || loginId === storedUser.phone) &&
+      password === storedUser.password
+    ) {
+      // SHOW OTP UI
+      document.getElementById("otpBox").style.display = "block";
+      document.getElementById("verifyBtn").style.display = "block";
+      document.getElementById("sendOtpBtn").style.display = "none";
+
+      errorMsg.style.color = "#38bdf8";
+      errorMsg.innerText = "OTP sent successfully (Demo OTP: 1234)";
+    } else {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Incorrect credentials.";
+    }
+  }
+
+  function verifyOTP() {
+    const enteredOtp = document.getElementById("otpInput").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (enteredOtp === DEMO_OTP) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      user.isLoggedIn = true;
+      localStorage.setItem("user", JSON.stringify(user));
+
+      window.location.href = "dashboard.html";
+    } else {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Invalid OTP. Try again.";
+    }
+  }
+</script>
+</body>
+</html>

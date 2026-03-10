@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | DynamicAttend</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: #fff;
+    }
+
+    .signup-box {
+      width: 380px;
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 1.8rem;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #818cf8;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #6366f1;
+      transform: translateY(-2px);
+    }
+
+    .error {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 1.4rem;
+      font-size: 0.9rem;
+    }
+
+    .link a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="signup-box">
+    <h1>Create Account</h1>
+    <p>Register to continue</p>
+
+    <!-- ROLE -->
+    <div class="input-group">
+      <label>Role</label>
+      <select id="role">
+        <option value="">Select role</option>
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+        <option value="parent">Parent</option>
+      </select>
+    </div>
+
+    <!-- NAME -->
+    <div class="input-group">
+      <label>Guardian Name</label>
+      <input 
+  type="text" 
+  id="name" 
+  placeholder="Enter your name"
+  oninput="this.value = this.value.toUpperCase()"
+/>
+
+    </div>
+
+    <!-- EMAIL -->
+    <div class="input-group">
+      <label>Email</label>
+      <input 
+  type="email" 
+  id="email" 
+  placeholder="Enter email"
+  oninput="this.value = this.value.toLowerCase()"
+/>
+
+    </div>
+
+    <!-- PHONE -->
+    <div class="input-group">
+      <label>Mobile Number</label>
+      <input
+  type="text"
+  id="phone"
+  placeholder="Enter mobile number"
+  maxlength="10"
+  inputmode="numeric"
+  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+/>
+
+    </div>
+
+    <!-- ID -->
+    <div class="input-group">
+      <label>ID / Roll Number</label>
+      <input
+  type="text"
+  id="userId"
+  placeholder="Enter Roll / ID number"
+  inputmode="numeric"
+  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+/>
+
+    </div>
+
+    <!-- COURSE -->
+    <div class="input-group">
+  <label>Course</label>
+  <select id="course">
+    <option value="">Select Course</option>
+    <option value="BCA">BCA</option>
+    <option value="BBA">BBA</option>
+    <option value="BCOM">BCOM</option>
+    <option value="MBA">MBA</option>
+    <option value="BSCIT">BSC IT</option>
+  </select>
+</div>
+
+    <!-- PASSWORD -->
+    <div class="input-group">
+  <label>Password</label>
+  <div style="position: relative;">
+    <input type="password" id="password" placeholder="Create password" />
+    <span 
+      onclick="togglePassword(this)" 
+      style="
+        position:absolute;
+        right:12px;
+        top:50%;
+        transform:translateY(-50%);
+        cursor:pointer;
+        font-size:0.85rem;
+        color:#38bdf8;
+      ">
+      Show
+    </span>
+  </div>
+</div>
+
+
+    <!-- SEND OTP -->
+    <button class="btn" id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+
+    <!-- OTP INPUT -->
+    <div class="input-group" id="otpBox" style="display:none;">
+      <label>Enter OTP</label>
+      <input type="text" id="otpInput" placeholder="Enter OTP" />
+    </div>
+
+    <!-- VERIFY -->
+    <button class="btn" id="verifyBtn" style="display:none;" onclick="verifyOTP()">
+      Verify & Create Account
+    </button>
+
+    <div class="error" id="errorMsg"></div>
+
+    <div class="link">
+      Already have an account?
+      <a href="login (2).html">Login</a>
+    </div>
+  </div>
+<script>
+  const DEMO_OTP = "1234";
+
+  function sendOTP() {
+    const role = document.getElementById("role").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const userId = document.getElementById("userId").value.trim();
+    const course = document.getElementById("course").value;
+    const password = document.getElementById("password").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.style.display = "block";
+
+    // Empty field validation
+    if (!role || !name || !email || !phone || !userId || !course || !password) {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Please fill all required fields.";
+      return;
+    }
+
+    // Phone length validation
+    if (phone.length !== 10) {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Mobile number must be exactly 10 digits.";
+      return;
+    }
+
+    // SHOW OTP UI
+    document.getElementById("otpBox").style.display = "block";
+    document.getElementById("verifyBtn").style.display = "block";
+    document.getElementById("sendOtpBtn").style.display = "none";
+
+    errorMsg.style.color = "#38bdf8";
+    errorMsg.innerText = "OTP sent successfully (Demo OTP: 1234)";
+  }
+
+  function verifyOTP() {
+    const enteredOtp = document.getElementById("otpInput").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (enteredOtp !== DEMO_OTP) {
+      errorMsg.style.color = "#f87171";
+      errorMsg.innerText = "Invalid OTP. Try again.";
+      return;
+    }
+
+    const user = {
+      role: document.getElementById("role").value,
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      id: document.getElementById("userId").value.trim(),
+      course: document.getElementById("course").value,
+      password: document.getElementById("password").value.trim(),
+      isLoggedIn: false
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    alert("Account created successfully. Please login.");
+    window.location.href = "login(1).html";
+  }
+
+  function togglePassword(el) {
+    const pass = document.getElementById("password");
+
+    if (pass.type === "password") {
+      pass.type = "text";
+      el.innerText = "Hide";
+    } else {
+      pass.type = "password";
+      el.innerText = "Show";
+    }
+  }
+</script>
+</body>
+</html>

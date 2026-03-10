@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Dynamic Attend</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --bg: #020617;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #6366f1;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --trans: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            background: radial-gradient(circle at 50% 0%, #1e1b4b, var(--bg));
+            min-height: 100vh; color: white; overflow-x: hidden; padding: 1.5rem;
+            display: flex; flex-direction: column;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem; background: var(--glass); border: 1px solid var(--border);
+            margin-bottom: 2rem; clip-path: polygon(0 0, 100% 0, 98% 100%, 2% 100%);
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-weight: 900; letter-spacing: -1px; font-size: 1.2rem; }
+        .logo span { color: var(--accent); }
+        .logout { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: var(--trans); }
+        .logout:hover { color: var(--danger); }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid; grid-template-columns: 320px 1fr 1fr; gap: 1.5rem; flex: 1;
+        }
+
+        .panel {
+            background: var(--glass); border: 1px solid var(--border);
+            backdrop-filter: blur(10px); padding: 2rem; position: relative;
+            display: flex; flex-direction: column; transition: var(--trans);
+            border-radius: 8px;
+        }
+        .panel:hover { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+
+        /* Profile Section */
+        .profile-card { clip-path: polygon(0 0, 100% 0, 100% 90%, 85% 100%, 0 100%); text-align: center; }
+        .avatar-container {
+            width: 90px; height: 90px; margin: 0 auto 1.5rem;
+            border-radius: 50%; border: 3px solid var(--accent);
+            padding: 5px; display: flex; align-items: center; justify-content: center;
+            background: rgba(6, 182, 212, 0.1); box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+        .info h2 { font-size: 1.6rem; margin-bottom: 0.2rem; }
+        .info h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .info p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 2rem; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+        .stat-val { font-weight: bold; color: var(--success); }
+        .stat-val.low { color: var(--warning); }
+
+        /* Token/Generator Section */
+        .qr-section { align-items: center; justify-content: space-between; gap: 1rem; }
+        .qr-box {
+            width: 200px; height: 200px; border: 2px dashed var(--border);
+            display: flex; align-items: center; justify-content: center;
+            background: white; padding: 10px; border-radius: 10px; position: relative;
+        }
+        .timer { font-family: monospace; color: var(--warning); font-size: 1.2rem; font-weight: bold; }
+        .btn-gen {
+            padding: 1rem 2.5rem; background: var(--primary); color: white; border: none;
+            font-weight: 800; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            cursor: pointer; transition: var(--trans); width: 100%;
+        }
+        .btn-gen:hover { transform: translateY(-3px); box-shadow: 0 5px 15px var(--primary); }
+
+        /* Scanner Section */
+        .scan-section { align-items: center; border-top: 4px solid var(--success); }
+        .viewfinder {
+            width: 260px; height: 260px; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; border-radius: 15px; overflow: hidden; background: #000;
+        }
+        .scanner-line {
+            width: 100%; height: 3px; background: var(--success);
+            box-shadow: 0 0 15px var(--success); position: absolute; top: 0; z-index: 10;
+            animation: scan 2s infinite ease-in-out; display: none;
+        }
+        @keyframes scan { 0% { top: 5%; } 50% { top: 90%; } 100% { top: 5%; } }
+        
+        /* Corner Brackets for Scanner */
+        .corner { position: absolute; width: 25px; height: 25px; border: 4px solid var(--success); z-index: 11; opacity: 0.6; }
+        .tl { top: 15px; left: 15px; border-right: 0; border-bottom: 0; }
+        .tr { top: 15px; right: 15px; border-left: 0; border-bottom: 0; }
+        .bl { bottom: 15px; left: 15px; border-right: 0; border-top: 0; }
+        .br { bottom: 15px; right: 15px; border-left: 0; border-top: 0; }
+
+        .btn-scan {
+            margin-top: 1.5rem; padding: 0.8rem 2rem; background: transparent;
+            border: 2px solid var(--success); color: var(--success); font-weight: bold;
+            clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%); cursor: pointer; transition: var(--trans);
+        }
+        .btn-scan:hover { background: var(--success); color: #000; }
+
+        @media (max-width: 1000px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .panel { clip-path: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">DYNAMIC<span>ATTEND</span></div>
+        <a href="login(1).html" class="logout">LOGOUT</a>
+    </nav>
+
+    <div class="dashboard">
+        <div class="panel profile-card">
+            <div class="avatar-container">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="info">
+                <h2>Aman Raj</h2>
+                <h4>ID: 310-32130</h4>
+                <p>Roll: B-15 | Sem 1 | BCA</p>
+            </div>
+            <div class="stat-row"><span>Attendance</span><span class="stat-val low">50%</span></div>
+            <div class="stat-row"><span>Classes</span><span class="stat-val">15/30</span></div>
+            <div class="stat-row"><span>Status</span><span style="color:var(--accent)">Active</span></div>
+        </div>
+
+        <div class="panel qr-section">
+            <h3 style="color: var(--primary); letter-spacing: 2px;">MY TOKEN</h3>
+            <div class="qr-box" id="qrcode">
+                <span style="color: #000; font-size: 0.7rem; text-align: center;">Click Generate to create QR</span>
+            </div>
+            <div class="timer" id="timer-display">EXPIRES: 00:30</div>
+            <button class="btn-gen" onclick="generateStudentQR()">GENERATE QR</button>
+        </div>
+
+        <div class="panel scan-section">
+            <h3 style="color: var(--success); letter-spacing: 2px; margin-bottom:0.5rem;">SCANNER</h3>
+            <p id="scan-label" style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 1rem;">SCAN READY</p>
+            
+            <div class="viewfinder" id="reader">
+                <div class="scanner-line" id="line"></div>
+                <div class="corner tl"></div><div class="corner tr"></div>
+                <div class="corner bl"></div><div class="corner br"></div>
+                
+                <p id="placeholder" style="position: absolute; color: rgba(255,255,255,0.2); font-size: 0.8rem; z-index: 1; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 80%;">
+                    WAITING FOR CAMERA...
+                </p>
+            </div>
+            
+            <button class="btn-scan" id="scan-trigger">ACTIVATE SCANNER</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SCANNER LOGIC ---
+        let html5QrCode;
+        const scanBtn = document.getElementById("scan-trigger");
+        const scanLine = document.getElementById("line");
+        const scanLabel = document.getElementById("scan-label");
+
+        // Click event listener for Scanner
+        scanBtn.addEventListener("click", () => {
+            // Agar pehle se scan ho raha hai toh stop kardo
+            if (html5QrCode && html5QrCode.isScanning) {
+                stopScanning();
+            } else {
+                startScanning();
+            }
+        });
+
+        function startScanning() {
+            // Naya instance banate hain camera ke liye
+            html5QrCode = new Html5Qrcode("reader");
+
+            const config = { 
+                fps: 20, 
+                qrbox: { width: 200, height: 200 },
+                aspectRatio: 1.0 
+            };
+
+            html5QrCode.start(
+                { facingMode: "environment" }, 
+                config,
+                (decodedText) => {
+                    // Jab QR mil jaye toh ye code chalega
+                    scanLabel.innerText = "QR DETECTED!";
+                    scanLabel.style.color = "var(--success)";
+                    
+                    // Thoda vibration (mobile support ke liye)
+                    if (navigator.vibrate) navigator.vibrate(100);
+
+                    alert("Success! Data Scanned: " + decodedText);
+                    stopScanning();
+                },
+                (errorMessage) => { 
+                    // Har frame par jo error aata hai (QR na milne par) usse ignore karte hain
+                }
+            ).then(() => {
+                // Camera start hone ke baad UI update
+                scanBtn.innerText = "STOP SCANNER";
+                scanBtn.style.borderColor = "var(--danger)";
+                scanBtn.style.color = "var(--danger)";
+                scanLine.style.display = "block";
+                scanLabel.innerText = "SCANNING IN PROGRESS...";
+            }).catch(err => {
+                // Agar camera permission nahi mili toh
+                console.error("Camera Error:", err);
+                scanLabel.innerText = "CAMERA ERROR!";
+            });
+        }
+
+        function stopScanning() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    // Sab reset kar rahe hain normal state mein
+                    html5QrCode.clear();
+                    scanBtn.innerText = "ACTIVATE CAMERA";
+                    scanBtn.style.borderColor = "var(--success)";
+                    scanBtn.style.color = "var(--success)";
+                    scanLine.style.display = "none";
+                    scanLabel.innerText = "CAMERA READY";
+                }).catch(err => console.error("Stop Error:", err));
+            }
+        }
+
+        // --- QR GENERATOR LOGIC ---
+        function generateStudentQR() {
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = ""; // Purana QR saaf karo
+            
+            // Random token generate kar rahe hain (Unique ID + Timestamp)
+            const tokenData = "STU-310-32130" + Date.now();
+
+            new QRCode(qrContainer, {
+                text: tokenData,
+                width: 180,
+                height: 180,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            startTimer(); // Timer start hoga jab QR ban jayega
+        }
+
+        let timerInterval;
+        function startTimer() {
+            clearInterval(timerInterval);
+            let timeLeft = 30;
+            const timerDisplay = document.getElementById("timer-display");
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = "EXPIRES: 00:" + (timeLeft < 10 ? "0" + timeLeft : timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("qrcode").innerHTML = "<span style='color:red; font-size:0.8rem;'>TOKEN EXPIRED!<br>Click Generate again.</span>";
+                    timerDisplay.innerText = "EXPIRED";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

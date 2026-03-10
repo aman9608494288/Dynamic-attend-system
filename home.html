@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6a1b9a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" sizes="32x32" href="maskable_icon_x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="maskable_icon_x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="maskable_icon_x512.png">
+    <link rel="icon" type="image/png" sizes="1132x1132" href="maskable_icon.png">
+    <link rel="icon" type="image/png" sizes="724x724" href="maskable_icon_x724.png">
+    <title>Dynamic Attend | CIMAGE</title>
+    <style>
+        :root { 
+            --bg: #0f172a; 
+            --text: #e2e8f0; 
+            --accent: #818cf8; 
+            --grad: linear-gradient(135deg, #6366f1, #a855f7); 
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+        
+        .intro-screen { position: fixed; inset: 0; background: #020617; z-index: 999999; overflow: hidden; display: flex; align-items: center; justify-content: center; animation: introExit 1s ease forwards 3s; }
+        .grid-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px); background-size: 60px 60px; transform: perspective(800px) rotateX(65deg); opacity: 0.25; }
+        .light-sweep { position: absolute; inset: -50%; background: linear-gradient(120deg,transparent 40%,rgba(129,140,248,0.25),transparent 60%); animation: sweep 2.5s ease infinite; }
+        .intro-panel { text-align: center; position: relative; opacity: 0; transform: scale(0.9); animation: panelIn 1s ease forwards; }
+        .intro-panel h1 { font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; letter-spacing: 4px; color: #f8fafc; margin-bottom: 0.5rem; }
+        .intro-panel h1 span { color: #38bdf8; animation: neonFlicker 2s infinite; }
+        .status-text { font-size: 0.75rem; letter-spacing: 5px; color: #64748b; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        @keyframes sweep { 0% { transform: translateX(-50%); } 100% { transform: translateX(50%); } }
+        @keyframes panelIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes neonFlicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: drop-shadow(0 0 5px #38bdf8); } 20%, 22%, 24%, 55% { opacity: 0.6; filter: none; } }
+        @keyframes introExit { to { opacity: 0; visibility: hidden; transform: translateY(-100%); } }
+
+        nav { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #1e293b; clip-path: polygon(0 0, 100% 0, 98% 100%, 2% 100%); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 900; font-size: 1.5rem; }
+        .logo span { color: var(--accent); }
+
+        .n-sc{position:fixed;left:20px;bottom:40px;z-index:9999;cursor:pointer;transition:0.5s}
+        .n-bx{padding:5px;border:none;background:rgba(0, 145, 255, 0);display:flex;flex-direction:column;align-items:center;gap:8px}
+        .n-bx p{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:900;letter-spacing:2px;color:#6413c6;text-shadow: 0 0 5px #6413c6, 0 0 5px #937bb1;}
+        .n-ar{width:10px;height:10px;border-right:3px solid #6413c6;border-bottom:3px solid #6413c6;transform:rotate(45deg);animation:n-b 1.5s infinite}
+        @keyframes n-b{0%,100%{transform:rotate(45deg)translate(0,0);opacity:0.4}50%{transform:rotate(45deg)translate(4px,4px);opacity:1}}
+
+        .settings-panel {
+            position: fixed; top: 85px; right: 25px; width: 300px; background: var(--glass);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); transform: translateY(-20px); opacity: 0; visibility: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 99999;
+        }
+        .settings-panel.active { transform: translateY(0); opacity: 1; visibility: visible; }
+        
+        .profile-pic-box { width: 60px; height: 60px; background: var(--grad); border-radius: 15px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #38bdf8; width: 85%; }
+
+        .settings-options { display: flex; flex-direction: column; gap: 5px; }
+        .settings-item { padding: 12px; border-radius: 10px; background: transparent; border: none; color: #cbd5e1; cursor: pointer; text-align: left; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .settings-item:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); color: white; }
+        .logout { color: #f87171 !important; }
+
+        header { padding: 8rem 2rem; text-align: center; background: radial-gradient(circle at top, #1e293b, #0f172a); clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%); }
+        h1 { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1.1; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+        .btn { padding: 1rem 2rem; color: #fff; text-decoration: none; font-weight: bold; transition: all .3s ease; min-width: 160px; text-align: center; border: none; cursor: pointer; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+
+        .btn:nth-child(1) { background: var(--grad); clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%); }
+        .btn:nth-child(1):hover { box-shadow: 0 0 15px var(--accent); }
+
+        .btn:nth-child(2) { background: #334155; clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%); }
+        .btn:nth-child(2):hover { background: #475569; transform: scale(1.05); }
+
+        .btn:nth-child(3) { background: transparent; border: 1px solid var(--accent); clip-path: polygon(0 0, 85% 0, 100% 30%, 100% 100%, 0 100%, 0 30%); }
+        .btn:nth-child(3):hover { background: var(--accent); color: #000; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; padding: 4rem 10%; }
+        .card {    background: #1e293b;  padding: 2rem; text-align: center;   transition: 0.3s; border-top: 3px solid var(--accent);color: white;}
+        .card:nth-child(1) {clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%);}
+        .card:nth-child(2) { clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 15% 100%, 0 70%);}     
+        .card:nth-child(3) {clip-path: polygon(0 0, 0 0, 100% 0%, 100% 100%, 15% 100%, 0 70%);}
+        .card img { width: 60px; margin-bottom: 1rem; }
+        .card:hover {background: #334155;transform: translateY(-5px);}
+
+        .row{display:flex;align-items:center;gap:4rem;padding:4rem 10%}
+        .row:nth-child(even){flex-direction:row-reverse}
+        .visual{flex:1;height:250px;background:#334155;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .visual img{width:100%;height:100%;object-fit:cover}
+        @media(max-width:768px){.row{flex-direction:column!important;padding:2rem 5%;gap:2rem}
+        .row:nth-child(even){flex-direction:column!important}.visual{width:100%;height:200px}}
+        .row:nth-of-type(1) .visual { clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%); } 
+        .row:nth-of-type(2) .visual { clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%); } 
+        .row:nth-of-type(3) .visual { clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); }
+
+        .tech { display: flex; justify-content: center; gap: 2rem; padding: 6rem 2rem; flex-wrap: wrap; background: #020617; clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%); }
+        .tech div { width: 70px; height: 70px; background: #1e293b; display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: 0.3s; }
+        .tech img { width: 35px; }
+
+        footer { text-align: center; padding: 4rem; background: #000; clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 100%); margin-top: -2rem; }
+    </style>
+</head>
+<body>
+
+<div id="introScreen" class="intro-screen">
+    <div class="grid-overlay"></div>
+    <div class="light-sweep"></div>
+    <div class="intro-panel">
+        <h1>DYNAMIC<span>ATTEND</span></h1>
+        <p class="status-text">System Online</p>
+    </div>
+</div>
+
+<nav>
+    <div class="logo">DYNAMIC<span>ATTEND</span></div>
+    <div class="settings-btn" onclick="toggleSettings()" style="cursor:pointer">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+    </div>
+</nav>
+
+<div class="n-sc" onclick="window.scrollTo({top:800,behavior:'smooth'})">
+    <div class="n-bx"><p>SCROLL DOWN TO SEE MORE</p><div class="n-ar"></div></div>
+</div>
+
+<div id="settingsPanel" class="settings-panel">
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:12px; color:var(--accent); font-weight:bold;">
+        <span>User Settings</span>
+        <span onclick="toggleSettings()" style="cursor:pointer">&times;</span>
+    </div>
+    <div class="profile-pic-box">&#x1F464;</div>
+    <div style="text-align:center; margin-bottom:15px;">
+        <div style="font-weight:bold">BCA Student</div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span style="font-size:10px; color:#94a3b8">Attendance: 85%</span>
+    </div>
+    <div class="settings-options">
+        <button class="settings-item"><span>&#x1F464;</span> Profile</button>
+        <button class="settings-item"><span>&#x1F6E1;</span> Security</button>
+        <button class="settings-item"><span>&#x1F4CA;</span> Attendance</button>
+        <button class="settings-item logout" onclick="logout()"><span>&#x1F6AA;</span> Logout</button>
+    </div>
+</div>
+
+<header>
+    <h1>Smart Attendance,<br>Zero Proxies</h1>
+    <p>Secure QR codes regenerate every 30 seconds. No cheating. Instant syncing.</p>
+    <div class="btn-group">
+        <a href="login(1).html" class="btn">Student Login</a>
+        <a href="#" class="btn">Teacher Portal</a>
+        <a href="#" class="btn">Parent Login</a>
+    </div>
+</header>
+
+<section class="grid">
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/shield.png" alt="AES">
+        <h3>Dynamic AES</h3>
+        <p>Encrypted codes refresh every 30s.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/qr-code.png" alt="Scan">
+        <h3>Instant Scan</h3>
+        <p>Verifies logs in milliseconds.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/database.png" alt="MySQL">
+        <h3>Auto Log</h3>
+        <p>Pushes data directly to MySQL.</p>
+    </div>
+</section>
+
+<section>
+    <div class="row">
+        <div><h2>1. Login</h2><p>Student authenticates via the secure portal.</p></div>
+        <div class="visual"><img src="https://images.unsplash.com/photo-1622151834677-70f982c9adef?auto=format&fit=crop&w=600" alt="Login"></div>
+    </div>
+    <div class="row">
+        <div><h2>2. Generate</h2><p>Server creates a unique, time-stamped QR signature.</p></div>
+        <div class="visual"><img src="https://www.the-qrcode-generator.com/wp-content/uploads/2025/08/Guide-to-choose-QR-code-768x432.webp" alt="QR"></div>
+    </div>
+    <div class="row">
+        <div><h2>3. Verify</h2><p>Teacher scans and data syncs to the database instantly.</p></div>
+        <div class="visual"><img src="https://thumbs.dreamstime.com/b/corporate-compliance-management-legal-documents-verification-review-421181790.jpg" alt="Scan"></div>
+    </div>
+</section>
+
+<div class="tech">
+    <div><img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png" alt="Py"></div>
+    <div><img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML"></div>
+    <div><img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS"></div>
+    <div><img src="https://cdn-icons-png.flaticon.com/512/1199/1199128.png" alt="SQL"></div>
+</div>
+
+<footer>
+    <p>Designed by <strong>IT minds COLLECTIVE</strong> | BCA Student, CIMAGE (AKU)</p>
+</footer>
+
+<script>
+    const settingsPanel = document.getElementById("settingsPanel");
+    function toggleSettings() { settingsPanel.classList.toggle("active"); }
+   function logout() {  window.location.href = "login(1).html"; } 
+
+    window.addEventListener('click', function(e){   
+        if (!settingsPanel.contains(e.target) && !document.querySelector('.settings-btn').contains(e.target)){
+            settingsPanel.classList.remove("active");
+        }
+    });
+
+    setTimeout(() => {
+        document.getElementById('introScreen').style.display = 'none';
+    }, 4000);
+
+    window.onscroll=()=>{const s=document.querySelector('.n-sc');if(s)s.style.opacity=window.scrollY>100?0:1;s.style.pointerEvents=window.scrollY>100?'none':'auto'};
+
+</script>
+
+</body>
+</html>

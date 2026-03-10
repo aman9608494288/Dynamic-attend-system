@@ -1,0 +1,34 @@
+{
+  "name": "Dynamic Attend",
+  "short_name": "DynAttend",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6a1b9a",
+  "description": "A dynamic QR-based attendance tracking system.",
+  "icons":[{
+    "purpose": "maskable",
+    "sizes": "574x574",
+    "src": "maskable_icon.png",
+    "type": "image/png"
+  },
+  {
+    "purpose": "maskable",
+    "sizes": "72x72",
+    "src": "maskable_icon_x72.png",
+    "type": "image/png"
+  },
+  {
+    "purpose": "maskable",
+    "sizes": "192x192",
+    "src": "maskable_icon_x192.png",
+    "type": "image/png"
+  },
+  {
+    "purpose": "maskable",
+    "sizes": "512x512",
+    "src": "maskable_icon_x512.png",
+    "type": "image/png"
+  }
+]
+}
