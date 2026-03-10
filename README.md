@@ -1,23 +1,24 @@
-🛡️ Dynamic Attend | Smart Attendance System
-Dynamic Attend is a secure, real-time attendance management system designed to eliminate proxies using time-stamped, regenerating QR codes. This project was specifically developed for the BCA Program at Aryabhatta Knowledge University (AKU).
+# 🛡️ Dynamic Attend | Smart Attendance System
 
-🚀 Key Features
-Dynamic QR Generation: Secure AES-encrypted QR codes refresh every 30 seconds to prevent cheating and proxies.
+**Dynamic Attend** is a secure, real-time attendance management system designed to eliminate proxies using time-stamped, regenerating QR codes. Developed for the **BCA Program at Aryabhatta Knowledge University (AKU)**.
 
-Instant Verification: Real-time scanning and logging using the html5-qrcode library for millisecond-fast processing.
+---
 
-Automated Dashboards: Students receive a personalized dashboard showing live attendance stats (e.g., 15/30 classes).
+## 🚀 Key Features
+* **Dynamic QR Generation:** Secure AES-encrypted QR codes refresh every 30 seconds to prevent cheating.
+* **Instant Verification:** Real-time scanning and logging using the `html5-qrcode` library.
+* **Automated Dashboards:** Each student receives a personalized dashboard showing real-time attendance stats (e.g., 15/30 classes).
+* **Cross-Platform Sync:** Backend integration with **SQLite** ensures data is pushed directly to the database in milliseconds.
 
-Cross-Platform Sync: Backend integration with SQLite ensures all data is synchronized across devices instantly.
+---
 
-🛠️ Tech Stack
-Frontend: HTML5, CSS3 (Glassmorphism UI), and JavaScript (ES6+).
+## 🛠️ Tech Stack
+* **Frontend:** HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+).
+* **Backend:** Python Flask with Flask-CORS for secure API handling.
+* **Database:** SQLite for local prototyping and student data persistence.
+* **Libraries:** `QRCode.js` for generation and `Html5-Qrcode` for scanning.
 
-Backend: Python Flask with Flask-CORS for secure API communication.
-
-Database: SQLite for efficient student data persistence and rapid prototyping.
-
-Libraries: QRCode.js for generation and Html5-Qrcode for camera-based scanning.
+---
 
 📂 Project Structure
 Plaintext
