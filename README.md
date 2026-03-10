@@ -18,7 +18,7 @@
 * **Database:** SQLite for local prototyping and student data persistence.
 * **Libraries:** `QRCode.js` for generation and `Html5-Qrcode` for scanning.
 
----
+---             
 
 ## 📂 Project Structure
 ```text
@@ -29,8 +29,9 @@
 ├── dashboard.html      # Student Panel & QR Generator
 ├── attendance.db       # SQLite Database File
 └── requirements.txt    # Python Dependencies
+
 ---
-⚙️ Installation & Setup
+## ⚙️ Installation & Setup
 1. Backend Setup
 Clone the repository.
 
@@ -64,6 +65,8 @@ IT MINDS COLLECTIVE BCA Student, CIMAGE (AKU)
 1. **Login:** Use the Teacher credentials to access the "Verificator" panel.
 2. **Scanner Activation:** Click **"Activate Scanner"** to open the camera.
 3. **Verification:** Scan the student's regenerating QR code.
+
+
    * *Note:* The system will automatically update the database and provide a success alert.
 
 ### 👪 For Parents
