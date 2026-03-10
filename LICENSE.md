@@ -1,0 +1,21 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment & Databases
+# We ignore the local .db so the live Render disk handles the real data
+*.db
+*.sqlite3
+
+# Virtual Environments
+venv/
+env/
+ENV/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Private Credentials (if add them later)
+.env
